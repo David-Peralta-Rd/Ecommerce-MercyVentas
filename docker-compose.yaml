@@ -1,0 +1,7 @@
+services:
+  api:
+    container_name: mercy_backend
+    build:
+      context: ./src/api
+    ports:
+      - "8000:8000"
