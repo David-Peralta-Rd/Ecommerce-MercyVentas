@@ -3,5 +3,22 @@ services:
     container_name: mercy_backend
     build:
       context: ./src/api
+      dockerfile: Dockerfile.dev
     ports:
       - "8000:8000"
+    volumes:
+      - dev_django_data:/app
+    networks:
+      - mercy_network
+
+
+
+
+
+
+networks:
+  mercy_network:
+    driver: bridge
+
+volumes:
+  dev_django_data:

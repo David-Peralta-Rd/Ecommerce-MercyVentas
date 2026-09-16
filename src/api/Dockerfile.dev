@@ -1,0 +1,27 @@
+FROM python:3.14-slim-bookworm
+
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+# 1. We copy uv directly.
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/
+
+# 2. External dependency cache
+COPY pyproject.toml uv.lock ./
+RUN uv pip install --system --no-cache-dir -r pyproject.toml
+
+# 3. Copying startup commands
+COPY entrypoint.sh ./
+RUN chmod +x entrypoint.sh
+
+# 4. We copy your current source code
+COPY . ./
+
+# 5. We install your code in editable mode for volume synchronization.
+RUN uv pip install --system --no-cache-dir -e .
+
+# dev mode
+ENTRYPOINT [ "bash", "entrypoint.sh" ]
+
+CMD [ "core", "runserver", "0.0.0.0:8000" ]
